@@ -11,3 +11,36 @@ divisors_sum m d = d * (l + 1) * l `div` 2
 problem_1' :: Integer -> Integer
 problem_1' m = divisors 3 + divisors 5 - divisors 15
   where divisors = divisors_sum m
+
+-- n-th Fibonacci number 1-indexed: 1, 1, 2, 3, 5, 8, ...
+-- O(phi^n), where phi is the golden ratio (1.618...)
+fib :: Integer -> Integer
+fib 1 = 1
+fib 2 = 1
+fib n = fib (n - 2) + fib (n - 1)
+
+-- Stream of Fibonacci numbers: 1, 1, 2, 3, 5, 8, ...
+-- O(n * phi^n)
+fibs :: [Integer]
+fibs = map fib [1..]
+
+-- O(n)
+fibs' :: [Integer]
+fibs' = 1 : 1 : zipWith (+) fibs' (tail fibs')
+
+-- O(n)
+fibs'' :: [Integer]
+fibs'' = map fst (iterate (\(a, b) -> (b, a + b)) (1, 1))
+
+-- O(n)
+problem_2 :: Integer -> Integer
+problem_2 n = sum (takeWhile (<= n) (filter even fibs''))
+
+-- Stream of even Fibonacci numbers (every 3rd): 2, 8, 34, 144, ...
+-- O(n)
+even_fibs :: [Integer]
+even_fibs = map fst (iterate (\(a, b) -> (b, 4*b + a)) (2, 8))
+
+-- O(n)
+problem_2' :: Integer -> Integer
+problem_2' n = sum (takeWhile (<= n) even_fibs)
