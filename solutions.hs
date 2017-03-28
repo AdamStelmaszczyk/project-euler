@@ -49,3 +49,18 @@ even_fibs = map fst (iterate (\(a, b) -> (b, 4*b + a)) (2, 8))
 -- O(n)
 problem_2' :: Integer -> Integer
 problem_2' n = sum (takeWhile (<= n) even_fibs)
+
+
+-- PROBLEM 3
+
+-- O(sqrt n)
+-- After d = 2, increasing d by 2 instead of 1 is possible.
+-- I liked the code brevity without this though.
+-- It also doesn't change the complexity.
+problem_3 :: Integer -> Integer
+problem_3 n = divide n 2
+              where divide n d | n <= 1                             = error "n <= 1 has no prime factors"
+                               | n == d                             = d
+                               | n `mod` d == 0                     = divide (n `div` d) d
+                               | floor (sqrt (fromIntegral n)) <= d = n
+                               | otherwise                          = divide n (d + 1)
