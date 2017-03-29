@@ -7,12 +7,12 @@ problem1 n = sum [d | d <- [1..n-1], d `mod` 3 == 0 || d `mod` 5 == 0]
 -- Sum of positive integers divisible by d smaller than n
 divisorsSum :: Integer -> Integer -> Integer
 divisorsSum n d = d * (l + 1) * l `div` 2
-  where l = (n - 1) `div` d
+                  where l = (n - 1) `div` d
 
 -- O(1)
 problem1' :: Integer -> Integer
 problem1' n = divisors 3 + divisors 5 - divisors 15
-  where divisors = divisorsSum n
+              where divisors = divisorsSum n
 
 
 -- PROBLEM 2
@@ -59,11 +59,11 @@ problem2' n = sum (takeWhile (<= n) evenFibs)
 -- It also doesn't change the complexity.
 problem3 :: Integer -> Integer
 problem3 n = divide n 2
-              where divide n d | n <= 1                             = error "n <= 1 has no prime factors"
-                               | n == d                             = d
-                               | n `mod` d == 0                     = divide (n `div` d) d
-                               | floor (sqrt (fromIntegral n)) <= d = n
-                               | otherwise                          = divide n (d + 1)
+             where divide n d | n <= 1                             = error "n <= 1 has no prime factors"
+                              | n == d                             = d
+                              | n `mod` d == 0                     = divide (n `div` d) d
+                              | floor (sqrt (fromIntegral n)) <= d = n
+                              | otherwise                          = divide n (d + 1)
 
 
 -- PROBLEM 4
