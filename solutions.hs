@@ -64,3 +64,22 @@ problem3 n = divide n 2
                                | n `mod` d == 0                     = divide (n `div` d) d
                                | floor (sqrt (fromIntegral n)) <= d = n
                                | otherwise                          = divide n (d + 1)
+
+
+-- PROBLEM 4
+
+-- List of digits of given positive number
+-- O(log n)
+digits :: Integer -> [Integer]
+digits 0 = []
+digits n = digits (n `div` 10) ++ [n `mod` 10]
+
+-- O(log n)
+isPalindrome :: Integer -> Bool
+isPalindrome n = digits n == reverse (digits n)
+
+-- O(n^2 * log n), where n = 100 (which is equal to length [900..999]).
+-- This creates a list of (n^2 / 2) products, each tested with isPalindrome,
+-- which is O(log n^2) = O(log n), i.e. linear in regards to the number of product digits.
+problem4 :: Integer
+problem4 = maximum (filter isPalindrome [a * b | a <- [900..999], b <- [a..999]])
