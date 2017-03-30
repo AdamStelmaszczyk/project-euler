@@ -87,7 +87,7 @@ problem4 = maximum (filter isPalindrome [a * b | a <- [900..999], b <- [a..999]]
 
 -- PROBLEM 5
 
--- Smallest posivite number divisible by all of the numbers from 1 to 20
+-- Smallest positive number divisible by all of the numbers from 1 to 20
 problem5 :: Integer
 problem5 = divisible 2520
            where divisible x | and [x `mod` d == 0 | d <- [2..20]] = x
