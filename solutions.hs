@@ -95,3 +95,16 @@ problem5 = divisible 2520
 
 problem5' :: Integer
 problem5' = foldr lcm 1 [1..20]
+
+
+-- PROBLEM 6
+
+-- O(n)
+problem6 :: Integer -> Integer
+problem6 n = sum [1..n] ^ 2 - sum [i ^ 2 | i <- [1..n]]
+
+-- O(1)
+problem6' :: Integer -> Integer
+problem6' n = squaresSum ^ 2 - sumSquares
+              where squaresSum = n * (n + 1) `div` 2
+                    sumSquares = (2 * n + 1) * (n + 1) * n `div` 6
