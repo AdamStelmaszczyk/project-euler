@@ -108,3 +108,26 @@ problem6' :: Integer -> Integer
 problem6' n = squaresSum ^ 2 - sumSquares
               where squaresSum = n * (n + 1) `div` 2
                     sumSquares = (2 * n + 1) * (n + 1) * n `div` 6
+
+
+-- PROBLEM 7
+
+-- O(sqrt n)
+isPrime :: Integer -> Bool
+isPrime 2 = True
+isPrime n = and [n `mod` d /= 0 | d <- 2 : [3, 5..sqrtN]]
+            where sqrtN = floor (sqrt (fromIntegral n))
+
+-- Stream of prime numbers: 2, 3, 5, 7, 11, ...
+-- O(n * sqrt n)
+primes :: [Integer]
+primes = [p | p <- [2..], isPrime p]
+
+-- n-th prime number, 1-indexed
+-- O(n * sqrt n)
+prime :: Integer -> Integer
+prime n = primes !! (fromIntegral n - 1)
+
+-- O(n * sqrt n)
+problem7 :: Integer -> Integer
+problem7 n = prime n
