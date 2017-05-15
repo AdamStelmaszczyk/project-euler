@@ -146,3 +146,11 @@ slices n xs | fromIntegral n > length xs = []
 -- O(n * length problem8number)
 problem8 :: Integer -> Integer
 problem8 n = maximum (map product (slices n (digits problem8number)))
+
+
+-- PROBLEM 9
+
+-- Find a, b such that a^2 + b^2 = c^2 and a + b + c = s = 1000
+-- O(s)
+problem9 :: [Integer]
+problem9 = [a | a <- [1..499], (500000 - 1000 * a) `mod` (1000 - a) == 0]
