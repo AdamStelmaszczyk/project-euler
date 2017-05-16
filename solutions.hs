@@ -1,6 +1,20 @@
 import qualified Data.Map as Map
 
 
+-- From "The Genuine Sieve of Eratosthenes" by Melissa O'Neill.
+-- O(n * log n * log log n)
+sieve xs = sieve' xs Map.empty
+           where sieve' []     table = []
+                 sieve' (x:xs) table = case Map.lookup x table of
+                                       Nothing    -> x : sieve' xs (Map.insert (x*x) [x] table)
+                                       Just facts -> sieve' xs (foldl reinsert (Map.delete x table) facts)
+                                                     where reinsert table prime = Map.insertWith (++) (x + prime) [prime] table
+
+-- Stream of n prime numbers: 2, 3, 5, 7, 11, ...
+-- O(n * log n * log log n)
+primes = sieve [2..]
+
+
 -- PROBLEM 1
 
 -- O(n)
@@ -121,17 +135,11 @@ isPrime 2 = True
 isPrime n = and [n `mod` d /= 0 | d <- 2 : [3, 5..sqrtN]]
             where sqrtN = floor (sqrt (fromIntegral n))
 
--- Stream of prime numbers: 2, 3, 5, 7, 11, ...
--- O(n * sqrt n)
-primes :: [Integer]
-primes = [p | p <- 2 : [3, 5..], isPrime p]
-
 -- n-th prime number, 1-indexed
--- O(n * sqrt n)
+-- O(n * log n * log log n)
 prime :: Integer -> Integer
 prime n = primes !! (fromIntegral n - 1)
 
--- O(n * sqrt n)
 problem7 :: Integer -> Integer
 problem7 n = prime n
 
@@ -161,27 +169,11 @@ problem9 = [a | a <- [1..499], (500000 - 1000 * a) `mod` (1000 - a) == 0]
 
 -- PROBLEM 10
 
--- O(n * sqrt n)
+-- O(n * log n * log log n)
 -- > problem10 2000000
--- 142913828922
--- (59.22 secs, 26279754744 bytes)
--- floor (sqrt 2000000) == 1414
-problem10 :: Integer -> Integer
-problem10 n = sum (takeWhile (<n) primes)
-
--- From "The Genuine Sieve of Eratosthenes" by Melissa O'Neill
--- O(n * log n * log log n)
-sieve xs = sieve' xs Map.empty
-           where sieve' []     table = []
-                 sieve' (x:xs) table = case Map.lookup x table of
-                     Nothing    -> x : sieve' xs (Map.insert (x*x) [x] table)
-                     Just facts -> sieve' xs (foldl reinsert (Map.delete x table) facts)
-                                   where reinsert table prime = Map.insertWith (++) (x + prime) [prime] table
-
--- O(n * log n * log log n)
--- > problem10' 2000000
 -- 142913828922
 -- (7.20 secs, 6971353456 bytes)
 -- floor (log 2000000) == 14
 -- floor (log 2000000 * log (log 2000000)) == 38
-problem10' n = sum (takeWhile (<n) (sieve [2..]))
+problem10 :: Integer -> Integer
+problem10 n = sum (takeWhile (<n) primes)
