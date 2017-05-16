@@ -1,3 +1,6 @@
+import qualified Data.Map as Map
+
+
 -- PROBLEM 1
 
 -- O(n)
@@ -154,3 +157,31 @@ problem8 n = maximum (map product (slices n (digits problem8number)))
 -- O(s)
 problem9 :: [Integer]
 problem9 = [a | a <- [1..499], (500000 - 1000 * a) `mod` (1000 - a) == 0]
+
+
+-- PROBLEM 10
+
+-- O(n * sqrt n)
+-- > problem10 2000000
+-- 142913828922
+-- (60.08 secs, 26901447504 bytes)
+-- floor (sqrt 2000000) == 1414
+problem10 :: Integer -> Integer
+problem10 n = sum (takeWhile (<n) primes)
+
+-- From "The Genuine Sieve of Eratosthenes" by Melissa O'Neill
+-- O(n * log n * log log n)
+sieve xs = sieve' xs Map.empty
+           where sieve' []     table = []
+                 sieve' (x:xs) table = case Map.lookup x table of
+                     Nothing    -> x : sieve' xs (Map.insert (x*x) [x] table)
+                     Just facts -> sieve' xs (foldl reinsert (Map.delete x table) facts)
+                                   where reinsert table prime = Map.insertWith (++) (x + prime) [prime] table
+
+-- O(n * log n * log log n)
+-- > problem10' 2000000
+-- 142913828922
+-- (7.20 secs, 6971353456 bytes)
+-- floor (log 2000000) == 14
+-- floor (log 2000000 * log (log 2000000)) == 38
+problem10' n = sum (takeWhile (<n) (sieve [2..]))
