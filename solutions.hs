@@ -124,7 +124,7 @@ isPrime n = and [n `mod` d /= 0 | d <- 2 : [3, 5..sqrtN]]
 -- Stream of prime numbers: 2, 3, 5, 7, 11, ...
 -- O(n * sqrt n)
 primes :: [Integer]
-primes = [p | p <- [2..], isPrime p]
+primes = [p | p <- 2 : [3, 5..], isPrime p]
 
 -- n-th prime number, 1-indexed
 -- O(n * sqrt n)
@@ -164,7 +164,7 @@ problem9 = [a | a <- [1..499], (500000 - 1000 * a) `mod` (1000 - a) == 0]
 -- O(n * sqrt n)
 -- > problem10 2000000
 -- 142913828922
--- (60.08 secs, 26901447504 bytes)
+-- (59.22 secs, 26279754744 bytes)
 -- floor (sqrt 2000000) == 1414
 problem10 :: Integer -> Integer
 problem10 n = sum (takeWhile (<n) primes)
