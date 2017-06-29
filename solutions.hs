@@ -1,5 +1,6 @@
-import qualified Data.Map as Map
-
+import           Data.List
+import           Data.Map.Strict (Map, (!))
+import qualified Data.Map.Strict as Map
 
 -- From "The Genuine Sieve of Eratosthenes" by Melissa O'Neill.
 -- O(n * log n * log log n)
@@ -169,11 +170,36 @@ problem9 = [a | a <- [1..499], (500000 - 1000 * a) `mod` (1000 - a) == 0]
 
 -- PROBLEM 10
 
+-- Simply summing up subsequent primes smaller than given n, problem reduced to primes generation.
 -- O(n * log n * log log n)
 -- > problem10 2000000
 -- 142913828922
 -- (7.20 secs, 6971353456 bytes)
 -- floor (log 2000000) == 14
 -- floor (log 2000000 * log (log 2000000)) == 38
+-- 2000000 * floor (log 2000000 * log (log 2000000)) == 76000000
 problem10 :: Integer -> Integer
 problem10 n = sum (takeWhile (<n) primes)
+
+-- From Lucy_Hedgehog's post on Project Euler forum about problem 10:
+-- https://stackoverflow.com/questions/44441627/how-to-optimize-this-haskell-code-summing-up-the-primes-in-sublinear-time
+-- O(n^0.75)
+-- > problem10' 2000000
+-- 142913828922
+-- (0.14 secs, 56081600 bytes)
+-- floor (2000000 ** 0.75) == 53182
+problem10' :: Integer -> Integer
+problem10' n = (lucy (Map.fromList [(i, i * (i + 1) `div` 2 - 1) | i <- vs]) 2 r vs) ! n
+               where vs = [n `div` i | i <- [1..r]] ++ [n', n' - 1 .. 1]
+                     r  = floor (sqrt (fromIntegral n))
+                     n' = n `div` r - 1
+
+lucy :: Map Integer Integer -> Integer -> Integer -> [Integer] -> Map Integer Integer
+lucy m p r vs | p > r               = m
+              | m ! p > m ! (p - 1) = lucy (update m vs p) (p + 1) r vs
+              | otherwise           = lucy m (p + 1) r vs
+
+update :: Map Integer Integer -> [Integer] -> Integer -> Map Integer Integer
+update m v p = foldl' decrease m (takeWhile (>= p*p) v)
+               where decrease m v = Map.adjust (subtract (sumOfSieved v)) v m
+                     sumOfSieved v = p * (m ! (v `div` p) - m ! (p - 1))
